@@ -6,14 +6,20 @@ logoImg: "https://raw.githubusercontent.com/evilz/vscode-reveal/master/images/lo
 slideNumber: true
 ---
 
-# ECMAScript
 
+
+
+
+
+# ECMAScript
 
 ## ECMAScript / JavaScript
 
+JavaScript is an implementation of the ECMAScript standard.
+
 ![:scale 100%](https://adrianmejia.com/images/history-javascript-evolution-es6.png)
 
-[Overview of JavaScript ES6 features (a.k.a ECMAScript 6 and ES2015+) | Adrian Mejia Blog](https://adrianmejia.com/blog/2016/10/19/overview-of-javascript-es6-features-a-k-a-ecmascript-6-and-es2015/ "")
+[What’s the difference between JavaScript and ECMAScript?](https://www.freecodecamp.org/news/whats-the-difference-between-javascript-and-ecmascript-cba48c73a2b5/ "")
 
 ---
 
@@ -277,9 +283,9 @@ module
 
 
 
-`class`
+### `class`
 
-decorator
+### decorator
 
 
 
@@ -494,7 +500,9 @@ Difference between run in command line and run script in `package.json`?
 
 ---
 
-## [Babel · The compiler for next generation JavaScript](https://babeljs.io/ "")
+## [Babel](https://babeljs.io/ "")
+
+**A transpiler that can convert ES6 code to ES5 code.**
 
 [Babel · Online REPL](https://babeljs.io/repl "")
 
@@ -540,10 +548,6 @@ babel-node // ES6 REPL
 
 ### babel-polyfill
 
-> In [web development](https://en.wikipedia.org/wiki/Web_development), a **polyfill** is code that implements a feature on [web browsers](https://en.wikipedia.org/wiki/Web_browser) that do not support the feature. Most often, it refers to a [JavaScript](https://en.wikipedia.org/wiki/JavaScript) [library](https://en.wikipedia.org/wiki/Library_(computing)) that implements an [HTML5](https://en.wikipedia.org/wiki/HTML5) [web standard](https://en.wikipedia.org/wiki/Web_standard), either an established standard (supported by some browsers) on older browsers, or a proposed standard (not supported by any browsers) on existing browsers.
->
-> 
->
 > A polyfill is a piece of code (usually JavaScript on the Web) used to provide modern functionality on older browsers that do not natively support it.
 >
 > [Polyfill - MDN Web Docs Glossary: Definitions of Web-related terms | MDN](https://developer.mozilla.org/en-US/docs/Glossary/Polyfill "")
@@ -571,7 +575,47 @@ require('babel-polyfill')
 ### Concepts
 
 * Entry
+
+```js
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    adminApp: './src/adminApp.js'
+  }
+};
+```
+
+
+
 * Output
+
+there can be multiple `entry` points, only one `output` configuration is specified.
+
+```js
+module.exports = {
+  entry: {
+    app: './src/app.js',
+    search: './src/search.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: __dirname + '/dist'
+  }
+};
+```
+
+```js
+module.exports = {
+  //...
+  output: {
+    path: '/home/proj/cdn/assets/[hash]',
+    publicPath: 'https://cdn.example.com/assets/[hash]/'
+  }
+};
+```
+
+
+
 * Plugin
 * Module
 
@@ -594,6 +638,16 @@ HtmlWebpackPlugin
 
 ---
 
+### Hot Module Replacement
+
+[Hot Module Replacement](https://webpack.js.org/concepts/hot-module-replacement "")
+
+> Hot Module Replacement (HMR) exchanges, adds, or removes modules while an application is running, without a full reload.
+
+
+
+
+
 ## ESLint
 
 `eslint --init`
@@ -608,11 +662,56 @@ HtmlWebpackPlugin
 
 
 
+## JSX
+
+HTML tag must be lower-case
+
+React component must be capitalized
+
+
+
 ## `props` and `state`
 
+### `props`
+
+Read: `this.props`
 
 
-## JSX
+
+`props.children` : [Composition vs Inheritance – React](https://reactjs.org/docs/composition-vs-inheritance.html "")
+
+```jsx
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  );
+}
+
+function WelcomeDialog() {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        Welcome
+      </h1>
+      <p className="Dialog-message">
+        Thank you for visiting our spacecraft!
+      </p>
+    </FancyBorder>
+  );
+}
+```
+
+[A quick intro to React’s props.children – codeburst](https://codeburst.io/a-quick-intro-to-reacts-props-children-cb3d2fce4891 "")
+
+### `state`
+
+Read: `this.state.variable`
+
+Write: `this.setState()`
+
+
 
 ---
 
@@ -774,6 +873,8 @@ React Performance Devtool: [nitin42/react-perf-devtool: A browser developer tool
 
 [深入浅出React和Redux (实战)-Kindle商店-亚马逊中国](https://www.amazon.cn/mn/detailApp/ref=asc_df_B071F89KXV1558664999000/?asin=B071F89KXV&tag=douban_kindle-23&creative=2384&creativeASIN=B071F89KXV&linkCode=df0 "")
 
+[深入React技术栈-图书-图灵社区](http://www.ituring.com.cn/book/1898 "")
+
 [Redux 中文文档 · GitBook](http://cn.redux.js.org/index.html "")，推荐
 
 * [Action](http://cn.redux.js.org/docs/basics/Actions.html "")
@@ -789,36 +890,6 @@ Slides By Mark: [Intro to React and Redux](https://blog.isquaredsoftware.com/pre
 [Foreword](https://survivejs.com/webpack/foreword/ "")
 
 
-
-## React面试题
-
-[【react面试题】不可错过的react 面试题 「务必收藏」 - 前端观澜 - SegmentFault 思否](https://segmentfault.com/a/1190000016761186 "")
-
-[常见react面试题汇总（适合中级前端） - 个人文章 - SegmentFault 思否](https://segmentfault.com/a/1190000016885832 "")
-
-[React 常用面试题目与分析 - 知乎](https://zhuanlan.zhihu.com/p/24856035 "")
-
-[2019必须要会的 50 个 React 面试题 - 极客教程](https://www.geekjc.com/post/5cabf9368024b76bc346b06f "") ★★★★★
-
-
-
-## 双向绑定
-
-
-
-[数据双向绑定的分析和简单实现 - 知乎](https://zhuanlan.zhihu.com/p/25464162 "")
-
-> 自从Angularjs火起来之后，双向绑定经常被提及。双向绑定概念其实很简单，就是视图（View）的变化能实时让数据模型（Model）发生变化，而数据的变化也能实时更新到视图层。我们所说的单向数据绑定就是从数据到视图这一方向的关系。
-
-[DMQ/mvvm: 剖析vue实现原理，自己动手实现mvvm](https://github.com/DMQ/mvvm "")
-
-
-
-# Markdown to Slides
-
-[gnab/remark: A simple, in-browser, markdown-driven slideshow tool.](https://github.com/gnab/remark "")
-
-* [Feature request: image scaling · Issue #72 · gnab/remark](https://github.com/gnab/remark/issues/72 "")
 
 
 
@@ -840,8 +911,3 @@ Slides By Mark: [Intro to React and Redux](https://blog.isquaredsoftware.com/pre
 
 
 
-## React项目
-
-[chvin/react-tetris: Use React, Redux, Immutable to code Tetris. 🎮](https://github.com/chvin/react-tetris "")
-
-[shinima/battle-city: 🎮 Battle city remake built with react.](https://github.com/shinima/battle-city "")
