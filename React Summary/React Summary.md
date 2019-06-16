@@ -41,6 +41,29 @@ object.assign
 
 
 
+`!! function() {}`
+
+[javascript - What does the exclamation mark do before the function? - Stack Overflow](https://stackoverflow.com/questions/3755606/what-does-the-exclamation-mark-do-before-the-function "")
+
+```js
+function foo() {console.log('a');} // undefined
+!function foo() {console.log('a');} // false
+function foo() {console.log('a');}() // Uncaught SyntaxError: Unexpected token )
+!function foo() {console.log('a');}() 
+// a
+// true
+!!function foo() {console.log('a');}()
+// a
+//false
+(function foo() {console.log('a');})()
+// a
+// undefined
+```
+
+[Javascript “Bang, Bang. I shot you down” - Use of double bangs (!!) in Javascript.](https://medium.com/swlh/javascript-bang-bang-i-shot-you-down-use-of-double-bangs-in-javascript-7c9d94446054 "")
+
+**the double-bang returns the boolean true/false association** of a value.
+
 ### JSON
 
 JSON syntax is a subset of JavaScript object expression.
@@ -484,6 +507,49 @@ console.info("output variable", window.Date());
 
 ## npm (Node Package Manager)
 
+`npm` or `yarn`
+
+```shell
+#Starting a new project
+npm init === yarn init      
+
+ #Installing all the dependencies of project
+npm install === yarn or yarn install    
+
+#Adding a dependency
+npm install [package] === yarn add [package] #The  package is saved to your package.json immediately.      
+npm install  [package]@[version] === yarn add [package]@[version]
+npm install [package]@[tag] === yarn add [package]@[tag]
+
+#Add a dev dependency
+npm install [package] --save-dev === yarn add [package] --dev
+
+#Upgrading a dependency
+npm update [package] === yarn upgrade [package]
+npm update [package]@[version] === yarn upgrade [package]@[version]
+npm update [package]@[tag] === yarn upgrade [package]@[tag]
+
+#Removing a dependency
+npm uninstall [package] === yarn remove [package]
+
+#View registry information
+npm view [package] === yarn info [package]
+
+#List installed packages
+npm list === yarn list
+npm list --depth === yarn list --depth=0
+
+#Install packages globally
+npm install -g [package] === yarn global addb [package]
+
+#Run a defined package script
+npm run [script] === yarn run [script]
+```
+
+[NPM vs Yarn Cheat Sheet – Red Shift](https://shift.infinite.red/npm-vs-yarn-cheat-sheet-8755b092e5cc?gi=bd42fb41317b "")
+
+
+
 ### package.json
 
 Difference between run in command line and run script in `package.json`?
@@ -752,7 +818,13 @@ digraph {
 
 ---
 
-## State Management
+## Data Flow
+
+[What Does Redux Do? (and when should you use it?)](https://daveceddia.com/what-does-redux-do/ "") ✔✔✔✔
+
+[How Redux Works: A Counter-Example ](https://daveceddia.com/how-does-redux-work/ "") ✔✔✔✔
+
+
 
 ![:scale 100%, ](why_use_store.png)
 
@@ -772,9 +844,77 @@ digraph {
 
 ![:scale 100%, Flux Versus Redux](flux_vs_redux_2.png)
 
+
+
+这一部分可以参考 [自述 · GitBook](http://cn.redux.js.org/index.html "")
+
+```js
+
+
+import { createStore } from 'redux'
+
+/**
+ * 这是一个 reducer，形式为 (state, action) => state 的纯函数。
+ * 描述了 action 如何把 state 转变成下一个 state。
+ *
+ * state 的形式取决于你，可以是基本类型、数组、对象、
+ * 甚至是 Immutable.js 生成的数据结构。惟一的要点是
+ * 当 state 变化时需要返回全新的对象，而不是修改传入的参数。
+ *
+ * 下面例子使用 `switch` 语句和字符串来做判断，但你可以写帮助类(helper)
+ * 根据不同的约定（如方法映射）来判断，只要适用你的项目即可。
+ */
+function counter(state = 0, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1
+    case 'DECREMENT':
+      return state - 1
+    default:
+      return state
+  }
+}
+
+// 创建 Redux store 来存放应用的状态。
+// API 是 { subscribe, dispatch, getState }。
+let store = createStore(counter)
+
+// 可以手动订阅更新，也可以事件绑定到视图层。
+store.subscribe(() => console.log(store.getState()))
+
+// 改变内部 state 惟一方法是 dispatch 一个 action。
+// action 可以被序列化，用日记记录和储存下来，后期还可以以回放的方式执行
+store.dispatch({ type: 'INCREMENT' })
+// 1
+store.dispatch({ type: 'INCREMENT' })
+// 2
+store.dispatch({ type: 'DECREMENT' })
+// 1
+```
+
+
+
+Action
+
+* action creator
+
+Reducer
+
+* `(old_state, action) => new_state`
+* should be pure function, return new object instead of modifing old object
+* design your own state tree, don't nest too deep
+
+Dispatcher
+
+Middleware
+
+Store Enhancer
+
+
+
 ---
 
-`state` tree design
+
 
 ---
 
@@ -838,6 +978,8 @@ HTML5 Drag and Drop
 
 
 ## BrowserSync  ??
+
+[Browsersync - Time-saving synchronised browser testing](https://www.browsersync.io/ "")
 
 
 
