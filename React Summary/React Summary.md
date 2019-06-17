@@ -548,6 +548,23 @@ npm run [script] === yarn run [script]
 
 [NPM vs Yarn Cheat Sheet – Red Shift](https://shift.infinite.red/npm-vs-yarn-cheat-sheet-8755b092e5cc?gi=bd42fb41317b "")
 
+```graphviz
+digraph {
+    start [shape=circle label=< > width=0.5 style=filled]
+    pkgjson [label=<package.json> shape=box]
+    pkglock [label=<package-lock.json<br/>package.json> shape=box]
+    pkgshrink [label=<npm-shrinkwrap.json<br/>package.json> shape=box]
+    yarn [label=<yarn-lock.json<br/>package.json> shape=box]
+
+    start -> pkgjson [label=<npm init -y> labelfontcolor="red"]
+    pkgjson -> yarn [label=<yarn add pkg>]
+    pkgjson -> pkglock [label=<npm install>]
+    pkglock -> pkgshrink [label=<npm shrinkwrap>]
+}
+```
+
+
+
 
 
 ### package.json
@@ -740,7 +757,13 @@ React component must be capitalized
 
 ### `props`
 
-Read: `this.props`
+Declaration:
+
+
+
+Read: `this.props.variable`
+
+Write: not modifiable
 
 
 
@@ -771,11 +794,25 @@ function WelcomeDialog() {
 
 [A quick intro to React’s props.children – codeburst](https://codeburst.io/a-quick-intro-to-reacts-props-children-cb3d2fce4891 "")
 
+
+
 ### `state`
+
+Declaration:
+
+```js
+this.state = {
+    
+}
+```
+
+
 
 Read: `this.state.variable`
 
 Write: `this.setState()`
+
+`this.state.variable = newVar` only sets value and can't trigger re-render.
 
 
 
@@ -783,22 +820,17 @@ Write: `this.setState()`
 
 ## VirtualDOM
 
+![](./public/react-virtual-dom.png )
+
+[The Inner Workings Of Virtual DOM – rajaraodv – Medium](https://medium.com/@rajaraodv/the-inner-workings-of-virtual-dom-666ee7ad47cf "")
+
+[How Virtual-DOM and diffing works in React – Gethyl George Kurian – Medium](https://medium.com/@gethylgeorge/how-virtual-dom-and-diffing-works-in-react-6fc805f9f84e "")
+
+[Virtual DOM: How inefficiency can lead to better performance - AFAS Dev](https://dev.afas.nl/blog-dev/virtual-dom-how-inefficiency-can-lead-to-better-performance "")
+
 ## Life Cycle
 
-```graphviz
-digraph {
-    start [shape=circle label=< > width=0.5 style=filled]
-    pkgjson [label=<package.json> shape=box]
-    pkglock [label=<package-lock.json<br/>package.json> shape=box]
-    pkgshrink [label=<npm-shrinkwrap.json<br/>package.json> shape=box]
-    yarn [label=<yarn-lock.json<br/>package.json> shape=box]
 
-    start -> pkgjson [label=<npm init -y> labelfontcolor="red"]
-    pkgjson -> yarn [label=<yarn add pkg>]
-    pkgjson -> pkglock [label=<npm install>]
-    pkglock -> pkgshrink [label=<npm shrinkwrap>]
-}
-```
 
 ---
 
