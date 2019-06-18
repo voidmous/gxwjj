@@ -571,6 +571,20 @@ digraph {
 
 Difference between run in command line and run script in `package.json`?
 
+<img src='https://g.gravizo.com/svg?
+digraph G {
+    start [shape=circle, label="", width=0.5,style=filled];
+    start -> pkgjson [label="npm init -y",fontcolor="red"];
+    pkgjson [label="package.json",shape=box];
+    pkgjson -> yarn [label="yarn add pkg"];
+    yarn [label="yarn-lock.json\npackage.json",shape=box];
+    pkgjson -> pkglock [label="npm install"];
+    pkglock [label="package-lock.json\npackage.json",shape=box];
+    pkglock -> pkgshrink [label="npm shrinkwrap"];
+    pkgshrink [label="npm-shrinkwrap.json\npackage.json",shape=box];
+}
+' />
+
 ---
 
 ## npx (Node Package Executor ??)
@@ -594,13 +608,9 @@ Difference between run in command line and run script in `package.json`?
 [babel-preset - npm search](https://www.npmjs.com/search?q=babel-preset "")
 
 ```shell
-npm install --save-dev babel-preset-latest
 npm install --save-dev babel-preset-react
-
+npm install --save-dev babel-preset-es2015
 npm install --save-dev babel-preset-stage-0
-npm install --save-dev babel-preset-stage-1
-npm install --save-dev babel-preset-stage-2
-npm install --save-dev babel-preset-stage-3
 ```
 
 ---
@@ -749,7 +759,7 @@ HtmlWebpackPlugin
 
 HTML tag must be lower-case
 
-React component must be capitalized
+User-Defined Components Must Be Capitalized
 
 
 
@@ -757,13 +767,17 @@ React component must be capitalized
 
 ### `props`
 
-Declaration:
+**Declaration**:
 
 
 
-Read: `this.props.variable`
+**Read**
 
-Write: not modifiable
+ `this.props.variable `
+
+**Write**
+
+not modifiable
 
 
 
@@ -792,13 +806,92 @@ function WelcomeDialog() {
 }
 ```
 
-[A quick intro to React’s props.children – codeburst](https://codeburst.io/a-quick-intro-to-reacts-props-children-cb3d2fce4891 "")
+---
+
+`PropTypes`
+
+Only do validation in development mode, not in production mode
+
+TODO show real example
+
+```js
+import PropTypes from 'prop-types';
+
+MyComponent.propTypes = {
+  // You can declare that a prop is a specific JS type. By default, these
+  // are all optional.
+  optionalNumber: PropTypes.number,
+
+  // Anything that can be rendered: numbers, strings, elements or an array
+  // (or fragment) containing these types.
+  optionalNode: PropTypes.node,
+
+  // A React element.
+  optionalElement: PropTypes.element,
+
+  // You can ensure that your prop is limited to specific values by treating
+  // it as an enum.
+  optionalEnum: PropTypes.oneOf(['News', 'Photos']),
+
+  // An object that could be one of many types
+  optionalUnion: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.instanceOf(Message)
+  ]),
+
+  // An array of a certain type
+  optionalArrayOf: PropTypes.arrayOf(PropTypes.number),
+
+  // An object with property values of a certain type
+  optionalObjectOf: PropTypes.objectOf(PropTypes.number),
+
+  // An object taking on a particular shape
+  optionalObjectWithShape: PropTypes.shape({
+    color: PropTypes.string,
+    fontSize: PropTypes.number
+  }),
+
+  // You can chain any of the above with `isRequired` to make sure a warning
+  // is shown if the prop isn't provided.
+  requiredFunc: PropTypes.func.isRequired,
+
+  // A value of any data type
+  requiredAny: PropTypes.any.isRequired,
+
+  // You can also specify a custom validator. It should return an Error
+  // object if the validation fails. Don't `console.warn` or throw, as this
+  // won't work inside `oneOfType`.
+  customProp: function(props, propName, componentName) {
+    if (!/matchme/.test(props[propName])) {
+      return new Error(
+        'Invalid prop `' + propName + '` supplied to' +
+        ' `' + componentName + '`. Validation failed.'
+      );
+    }
+  },
+
+  // You can also supply a custom validator to `arrayOf` and `objectOf`.
+  // It should return an Error object if the validation fails. The validator
+  // will be called for each key in the array or object. The first two
+  // arguments of the validator are the array or object itself, and the
+  // current item's key.
+  customArrayProp: PropTypes.arrayOf(function(propValue, key, componentName, location, propFullName) {
+    if (!/matchme/.test(propValue[key])) {
+      return new Error(
+        'Invalid prop `' + propFullName + '` supplied to' +
+        ' `' + componentName + '`. Validation failed.'
+      );
+    }
+  })
+};
+```
 
 
 
 ### `state`
 
-Declaration:
+**Declaration**
 
 ```js
 this.state = {
@@ -808,15 +901,85 @@ this.state = {
 
 
 
-Read: `this.state.variable`
+**Read**
 
-Write: `this.setState()`
+ `this.state.variable`
+
+**Write**
+
+`this.setState(data, callback)`
 
 `this.state.variable = newVar` only sets value and can't trigger re-render.
+
+---
+
+###  `props` versus `state`
+
+| Comparison   | `props`                      | `state`                                  |
+| ------------ | ---------------------------- | ---------------------------------------- |
+| Usage        | data from parent to children | inner state of a component               |
+| Modification | unmodifiable ??              | call `setState()` from inside or outside |
+|              |                              |                                          |
 
 
 
 ---
+
+### Context
+
+From grandparent component to grandchildren component
+
+Not used very often
+
+### Action Callback
+
+
+
+### `ref`
+
+[Refs and the DOM – React](https://reactjs.org/docs/refs-and-the-dom.html "")
+
+
+
+## High Order Component
+
+```jsx
+import {Component} from React;
+
+function hoc(Comp) {
+    return class EnhancedComponent extends Component {
+        extendFunc() {
+            // enhance component behavior
+        }
+
+        render() {
+            return (
+                <Comp {...this.props} />
+            )
+        }
+    }
+}
+const newComp = hoc(aComp);
+```
+
+
+
+```jsx
+function transProps(transFunc) {
+    return function(Comp) {
+        return class extends Component {
+            render() {
+                return <Comp {...transFunc(this.props)} />
+            }
+        }
+    }
+}
+const newAdapter = transProps(transPropsFunc)(aComp);
+```
+
+
+
+----
 
 ## VirtualDOM
 
@@ -827,6 +990,10 @@ Write: `this.setState()`
 [How Virtual-DOM and diffing works in React – Gethyl George Kurian – Medium](https://medium.com/@gethylgeorge/how-virtual-dom-and-diffing-works-in-react-6fc805f9f84e "")
 
 [Virtual DOM: How inefficiency can lead to better performance - AFAS Dev](https://dev.afas.nl/blog-dev/virtual-dom-how-inefficiency-can-lead-to-better-performance "")
+
+[Understanding the Virtual DOM](https://bitsofco.de/understanding-the-virtual-dom/ "")
+
+[The Real Benefits of the Virtual DOM in React.js](https://www.accelebrate.com/blog/the-real-benefits-of-the-virtual-dom-in-react-js/ "")
 
 ## Life Cycle
 
@@ -1012,6 +1179,39 @@ HTML5 Drag and Drop
 ## BrowserSync  ??
 
 [Browsersync - Time-saving synchronised browser testing](https://www.browsersync.io/ "")
+
+
+
+## React Start Up
+
+[download this HTML file](https://raw.githubusercontent.com/reactjs/reactjs.org/master/static/html/single-file-example.html)
+
+* handy for testing, should not use in production
+* write React code inside `text/babel` script block
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    ReactDOM.render(
+      <h1>Hello, world!</h1>,
+      document.getElementById('root')
+    );
+  </script>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</body>
+</html>
+```
+
+
 
 
 
