@@ -739,6 +739,8 @@ HtmlWebpackPlugin
 
 
 
+[webpack与browser-sync热更新原理深度讲解 | louis blog](https://louiszhai.github.io/2017/04/19/hmr/ "")
+
 
 
 ## ESLint
@@ -769,17 +771,42 @@ User-Defined Components Must Be Capitalized
 
 **Declaration**:
 
-
+```jsx
+<User name="yan" age="18" />
+```
 
 **Read**
 
- `this.props.variable `
+```jsx
+class User extends Component {
+    render() {
+        return <div>{this.props.name}</div>
+    }
+}
+```
 
 **Write**
 
 not modifiable
 
+------
 
+**Functional Component**
+
+```jsx
+function User(props) {
+    render() {
+        // return <div>{props.name}</div>
+        return (
+            <div>{props.name}</div>
+        )
+    }
+}
+```
+
+It's recommended to use `()` after `return` to avoid subtle syntax error
+
+-------
 
 `props.children` : [Composition vs Inheritance – React](https://reactjs.org/docs/composition-vs-inheritance.html "")
 
@@ -810,12 +837,13 @@ function WelcomeDialog() {
 
 `PropTypes`
 
-Only do validation in development mode, not in production mode
+Only do data type validation in development mode, not in production mode
 
 TODO show real example
 
 ```js
 import PropTypes from 'prop-types';
+// import {PropTypes} from 'react'; // before react 15.5
 
 MyComponent.propTypes = {
   // You can declare that a prop is a specific JS type. By default, these
@@ -893,21 +921,34 @@ MyComponent.propTypes = {
 
 **Declaration**
 
-```js
-this.state = {
+```jsx
+class Clock extends React.Component {
+    state = {
+        time: 0
+    }
     
+    componentDidMount() {
+        this.id = setInterval(() => {
+            this.setState({time: this.state.time + 1}, () => {
+                console.log('callback ' + this.state.time); // return 1 after setState
+            })
+        }, 1000); // will run asynchronously
+        console.log('subsequence ' + this.state.time); // return 0 instead of 1
+    }
+    
+    render() {
+        return <div>{this.state.time}</div>
+    }
 }
 ```
 
-
-
 **Read**
 
- `this.state.variable`
+ `this.state.time`
 
 **Write**
 
-`this.setState(data, callback)`
+`this.setState(data, callback)` React will combine `setState()`  into one change and then invoke callback
 
 `this.state.variable = newVar` only sets value and can't trigger re-render.
 
@@ -930,6 +971,33 @@ this.state = {
 From grandparent component to grandchildren component
 
 Not used very often
+
+```js
+import PropTypes from 'prop-types';
+
+      class Child extends React.Component {
+
+        static contextTypes = {
+          text: PropTypes.string
+        }
+
+        render () {
+          return <div> {this.context.text} </div>;
+        }
+      }
+
+      class Ancestor extends React.Component {
+        static childContextTypes = {
+          text: PropTypes.string
+        }
+
+        getChildContext() {
+          return {text: 'ancestor'};
+        }
+      }
+```
+
+
 
 ### Action Callback
 
@@ -996,6 +1064,30 @@ const newAdapter = transProps(transPropsFunc)(aComp);
 [The Real Benefits of the Virtual DOM in React.js](https://www.accelebrate.com/blog/the-real-benefits-of-the-virtual-dom-in-react-js/ "")
 
 ## Life Cycle
+
+When will a compoent redraw?
+
+1. Parent update
+   * `componentWillReceiveProps()`
+   * `shouldComponentUpdate()`
+   * `componentWillUpdate()`
+   * `render()`
+   * `componentDidUpdate()`
+2. Own state change
+   * `shouldComponentUpdate()`
+   * `componentWillUpdate()`
+   * `render()`
+   * `componentDidUpdate()`
+3. `this.forceUpdate()`
+   * `componentWillUpdate()`
+   * `render()`
+   * `componentDidUpdate()`
+
+
+
+`shouldComponentUpdate()` is mostly used to reduce unnecessary redraw to improve performance, `componentWillReceiveProps()` is generally used to sync new `props` to `state`
+
+`componentWillUnmount()` is used to clean resources
 
 
 
